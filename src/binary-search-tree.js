@@ -8,19 +8,19 @@ const { NotImplementedError } = require('../extensions/index.js');
 */
 class BinarySearchTree {
   constructor() {
-    this.root = null;
+    this.rootData = null;
   }
 
   root() {
-    return this.root
+    return this.rootData;
   }
   
   add(data) {
     let newNode = new Node(data);
-    if (this.root === null) {
-        this.root = newNode;
+    if (this.rootData === null) {
+        this.rootData = newNode;
     } else {
-        this.addNode(this.root, newNode);
+        this.addNode(this.rootData, newNode);
     }
   }
   
@@ -34,7 +34,7 @@ class BinarySearchTree {
   }
   
   has(data) {
-    return hasData(data, this.root);
+    return hasData(data, this.rootData);
     function hasData(data, node) {
       if (node === null) {
         return false
@@ -49,7 +49,7 @@ class BinarySearchTree {
   }
 
   find(data) {
-    return findData(data, this.root);
+    return findData(data, this.rootData);
     function findData(data, node) {
       if (node === null) {
         return null
@@ -65,13 +65,52 @@ class BinarySearchTree {
 
 
 
-  remove(/* data */) {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
-  }
+  remove(data ) {
+    return removeData(this.rootData, data);
 
+    function removeData(node, data) {
+      if (node === null) {
+        return null
+      } else if (data < node.data) {
+        node.left = removeData(node.left, data)
+        return node
+      } else if  (data > node.data) {
+        node.right = removeData(node.right, data)
+        return node
+      } else {
+        
+        //no child
+        if (node.left ===null && node.right===null) {
+          node = null; 
+          return node
+        };
+        
+        //one child
+        if (node.left === null) {
+          node = node.right;
+          return node
+        };
+        if (node.right === null) {
+          node = node.left;
+          return node
+        };
+      };
+      
+      //two child
+      let minNodeRight =  minData(node.right);
+        function minData(node) {
+          if (node.left === null) {
+            return node.data
+          } else return minData(node.left)  
+        }
+        node.data = minNodeRight;
+        node.right = removeData(node.right, minNodeRight);
+        return node     
+    };     
+  }
+  
   min() {
-    return minData(this.root);
+    return minData(this.rootData);
     function minData(node) {
       if (node.left === null) {
         return node.data
@@ -79,8 +118,8 @@ class BinarySearchTree {
     }
   }
 
-max() {
-    return maxData(this.root);
+  max() {
+    return maxData(this.rootData);
     function maxData(node) {
       if (node.right === null) {
         return node.data
